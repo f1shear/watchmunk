@@ -1,0 +1,10 @@
+{% extends "base/base.html" %}
+
+{% block page %}
+
+<div class='container'>
+  <p>Logged out!</p>  
+  <a href="{% url 'login'%}">Click here to login again.</a>
+</div>
+
+{% endblock %}

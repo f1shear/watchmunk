@@ -128,3 +128,5 @@ STATICFILES_DIRS = (
 )
 
 AUTH_USER_MODEL = 'user.UserModel'
+
+LOGIN_REDIRECT_URL = '/dashboard'

@@ -1,0 +1,65 @@
+{% extends "base/base.html" %}
+
+{% block page %}
+  <div class="page">
+        <div class='row'>
+          <div class='col'>
+            <a class='btn btn-info float-right' href='{% url "logout" %}?next=/'> Logout </a>
+
+          </div>
+        </div>
+
+        <div class='row'>
+
+          <div class='col-md-3'>
+            <br>
+            <div class="card">
+            <div class="card-body">
+              {{system.name}}
+
+              <span class='badge badge-primary'>
+                {{system.system_type}}
+              </span>
+              &nbsp;&nbsp;
+              <span class='badge badge-primary'>
+                {{system.deployment_type}}
+              </span>
+              <hr>
+              <p> <b> Author </b> {{system.author.username}} </p>
+              <hr>
+              <p> <b> Repo </b> {{system.repo_info}} </p>
+              <p> <b> Environment Configuration </b> {{system.environment_config}} </p>
+              <p> <b> Staging Info </b> {{system.staging_info}} </p>
+              <p> <b> Production Info </b> {{system.production_info}} </p>
+              <p> <b> API Info </b> {{system.api_info}} </p>
+            </div>
+          </div>
+          </div>
+
+          <div class='col-md-9'>
+            <br>
+            <div class='card'>
+              <div class='card-body'>
+                <b> Integrations </b> <hr>
+                <div class='row'>
+                  <div class='col-md-3'>
+                    <ul class="list-group">
+                    <li class="list-group-item"> Bitbucket </li>
+                    <li class="list-group-item"> Github </li>
+                    <li class="list-group-item active"> Trello </li>
+                    <li class="list-group-item"> Jira </li>
+                    <li class="list-group-item"> Jenkins </li>
+                    <li class="list-group-item"> Travis CI </li>
+                    <li class='list-group-item'> + Add Integration </li>
+                  </ul>
+                  </div>
+                  <div class='col-md-9'>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  </div>
+
+{% endblock %}

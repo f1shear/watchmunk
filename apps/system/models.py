@@ -78,10 +78,10 @@ class ModeratorModel(models.Model):
 
 
 class DependencyModel(models.Model):
-    consumer = models.ForeignKey(
+    system = models.ForeignKey(
         'system.SystemModel',
         related_name='+', on_delete=models.CASCADE)
-    system = models.ForeignKey(
+    depends_on = models.ForeignKey(
         'system.SystemModel',
         related_name='+', on_delete=models.CASCADE)
 

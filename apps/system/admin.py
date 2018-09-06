@@ -9,7 +9,7 @@ class ModeratorInline(admin.TabularInline):
 
 class DependencyInline(admin.TabularInline):
     model = DependencyModel
-    fk_name = 'consumer'
+    fk_name = 'system'
 
 
 @admin.register(SystemModel)

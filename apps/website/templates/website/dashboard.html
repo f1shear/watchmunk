@@ -1,0 +1,67 @@
+{% extends "base/base.html" %}
+{% block page %}
+    <div class="container">
+      <div class="page">
+        <div class='row'>
+          <div class='col'>
+
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProjectModal">
+              Add Project
+            </button>
+
+            <a class='btn btn-info float-right' href='{% url "logout" %}?next=/'> Logout </a>
+
+          </div>
+        </div>
+        <div class='row'>
+          <div class='col'>
+            <br>
+            <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for project in projects %}
+                <tr>
+                  <th scope="row">#{{project.id}}</th>
+                  <td>
+                    <a href='/projects/{{project.id}}'>
+                      {{project.name}}
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div class="modal fade" id="addProjectModal" tabindex="-1" role="dialog" aria-labelledby="addProjectModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addProjectModalLabel">New Project</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+  <div class="form-group">
+    <label for="projectName">Project</label>
+    <input type="text" class="form-control" id="projectName" aria-describedby="projectNameHelp" placeholder="Enter project name..">
+  </div>
+  <button type="submit" class="btn btn-primary">Save</button>
+</form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
