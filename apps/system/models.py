@@ -87,3 +87,37 @@ class DependencyModel(models.Model):
 
     class Meta:
         db_table = 'dependency'
+
+
+class AppModel(models.Model):
+    name = models.CharField(max_length=255)
+    message_template = models.TextField(default='', blank=True)
+
+    class Meta:
+        db_table = 'app'
+
+    def __str__(self):
+        return self.name
+
+
+class ProjectAppModel(models.Model):
+    project = models.ForeignKey(
+        'system.ProjectModel',
+        related_name='project_apps', on_delete=models.CASCADE)
+    app = models.ForeignKey(
+        'system.AppModel', related_name='+', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'project_app'
+
+
+class SystemAppModel(models.Model):
+    system = models.ForeignKey(
+        'system.SystemModel',
+        related_name='system_apps', on_delete=models.CASCADE)
+    app = models.ForeignKey(
+        'system.AppModel',
+        related_name='+', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'system_app'
