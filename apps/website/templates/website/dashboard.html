@@ -1,15 +1,13 @@
 {% extends "base/base.html" %}
 {% block page %}
-    <div class="container">
-      <div class="page">
+
+
         <div class='row'>
           <div class='col'>
 
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProjectModal">
               Add Project
             </button>
-
-            <a class='btn btn-info float-right' href='{% url "logout" %}?next=/'> Logout </a>
 
           </div>
         </div>
@@ -38,8 +36,7 @@
             </table>
           </div>
         </div>
-      </div>
-    </div>
+
 
 <div class="modal fade" id="addProjectModal" tabindex="-1" role="dialog" aria-labelledby="addProjectModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
