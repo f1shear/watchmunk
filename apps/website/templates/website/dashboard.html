@@ -27,7 +27,7 @@
               <tbody>
 
                 <tr v-for="project in projects">
-                  <th scope="row">#{{project.id}}</th>
+                  <th scope="row">{{project.id}}</th>
                   <td>
                     <a :href='"/projects/"+project.id'>
                       {{project.name}}
