@@ -66,15 +66,15 @@
                   </td>
                   <td>
                     {% for moderator in system.moderators.all %}
-                      {{moderator.username}} <br>
+                      {{moderator.moderator.username}} <br>
                     {% endfor %}
                   </td>
                   <td>
                     {% for dep in system.dependencies.all %}
                       <a href='/projects/{{project.id}}/systems/{{dep.id}}'>
-                        {{dep.name}}
+                        {{dep.depends_on.name}}
                       </a>
-                      [{{dep.system_type}}]
+                      [{{dep.depends_on.system_type}}]
                       <br>
                     {% endfor %}
                   </td>
