@@ -1,17 +1,17 @@
 from django.contrib import admin
 
-from .models import SystemModel, ProjectModel, ModeratorModel, DependencyModel
+from .models import SystemModel, ProjectModel, SystemModeratorModel, SystemDependencyModel
 
 from .models import AppModel, ProjectAppModel, SystemAppModel
 
 
-class ModeratorInline(admin.TabularInline):
-    model = ModeratorModel
+class SystemModeratorInline(admin.TabularInline):
+    model = SystemModeratorModel
 
 
-class DependencyInline(admin.TabularInline):
-    model = DependencyModel
-    fk_name = 'system'
+class SystemDependencyInline(admin.TabularInline):
+    model = SystemDependencyModel
+    fk_name = "system"
 
 
 class ProjectAppInline(admin.TabularInline):
@@ -30,7 +30,7 @@ class AppAdmin(admin.ModelAdmin):
 @admin.register(SystemModel)
 class SystemAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'system_type', 'deployment_type', 'author', )
-    inlines = [ModeratorInline, DependencyInline, SystemAppInline]
+    inlines = [SystemModeratorInline, SystemDependencyInline, SystemAppInline]
 
 
 @admin.register(ProjectModel)

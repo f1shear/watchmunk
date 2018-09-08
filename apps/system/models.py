@@ -52,13 +52,6 @@ class SystemModel(models.Model):
         UserModel, related_name='author_systems',
         null=True, blank=True, on_delete=models.SET_NULL)
 
-    moderators = models.ManyToManyField(
-        'user.UserModel', through='ModeratorModel', related_name='moderators')
-    dependencies = models.ManyToManyField(
-        'self',
-        through='DependencyModel',
-        related_name='system_dependencies', symmetrical=False)
-
     class Meta:
         db_table = 'system'
 
@@ -66,27 +59,27 @@ class SystemModel(models.Model):
         return "%s" % self.name
 
 
-class ModeratorModel(models.Model):
+class SystemModeratorModel(models.Model):
     system = models.ForeignKey(
         'system.SystemModel',
-        related_name='+', on_delete=models.CASCADE)
+        related_name='moderators', on_delete=models.CASCADE)
     moderator = models.ForeignKey(
         'user.UserModel', related_name='+', on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'moderator'
+        db_table = 'system_moderator'
 
 
-class DependencyModel(models.Model):
+class SystemDependencyModel(models.Model):
     system = models.ForeignKey(
         'system.SystemModel',
-        related_name='+', on_delete=models.CASCADE)
+        related_name='dependencies', on_delete=models.CASCADE)
     depends_on = models.ForeignKey(
         'system.SystemModel',
         related_name='+', on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'dependency'
+        db_table = 'system_dependency'
 
 
 class AppModel(models.Model):
