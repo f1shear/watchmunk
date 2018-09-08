@@ -1,13 +1,16 @@
 {% extends "base/base.html" %}
 {% block page %}
+{% verbatim %}
 
+<div id='projectVue'>
 
         <div class='row'>
           <div class='col'>
-
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProjectModal">
+            <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addProjectModal">
               Add Project
             </button>
+            <h4> Projects </h4>
+            
 
           </div>
         </div>
@@ -22,16 +25,16 @@
                 </tr>
               </thead>
               <tbody>
-                {% for project in projects %}
-                <tr>
+
+                <tr v-for="project in projects">
                   <th scope="row">#{{project.id}}</th>
                   <td>
-                    <a href='/projects/{{project.id}}'>
+                    <a :href='"/projects/"+project.id'>
                       {{project.name}}
                     </a>
                   </td>
                 </tr>
-                {% endfor %}
+
               </tbody>
             </table>
           </div>
@@ -48,10 +51,10 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
+        <form v-on:submit.prevent="saveProject">
   <div class="form-group">
     <label for="projectName">Project</label>
-    <input type="text" class="form-control" id="projectName" aria-describedby="projectNameHelp" placeholder="Enter project name..">
+    <input type="text" class="form-control" id="projectName" aria-describedby="projectNameHelp" placeholder="Enter project name.." v-model='projectForm.name'>
   </div>
   <button type="submit" class="btn btn-primary">Save</button>
 </form>
@@ -60,5 +63,45 @@
     </div>
   </div>
 </div>
+
+</div>
+
+<script type='text/javascript'>
+
+var app = new Vue({
+  el: '#projectVue',
+  data: {
+    projects: [],
+    projectForm: {
+      name: ''
+    }
+  },
+  methods: {
+    loadProjects: function(){
+      console.log('loadProjects');
+      var that = this;
+      $.get('/api/v1/projects', function(data){
+
+        that.projects = data['results'];
+        console.log(data);
+      });
+    },
+    saveProject : function(){
+      var that = this;
+      $.post("api/v1/projects/", this.projectForm, function(data){
+        alert("Saved");
+        $('#addProjectModal').modal('hide');
+        that.loadProjects();
+      });
+    }
+
+  },
+  mounted: function(){
+    this.loadProjects();
+  }
+});
+
+</script>
+{% endverbatim %}
 
 {% endblock %}
