@@ -21,6 +21,22 @@
         </div>
         <div class='row'>
           <div class='col-md-3'>
+            <br>
+            <h4> Detail </h4>
+            <form v-on:submit.prevent="saveProject">
+
+                <div class="form-group">
+                  <label for="projectName">Project Name</label>
+                  <input type="text" class="form-control" id="projectName" aria-describedby="systemNameHelp" v-model='project.name'>
+                </div>
+                <div class="form-group">
+                  <label for="description"> Description </label>
+                  <textarea class='form-control' id="description" v-model="project.description"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Save</button>
+
+            </form>
           </div>
           <div class='col-md-9'>
             <br>
@@ -29,6 +45,7 @@
               <thead class="thead-dark">
                 <tr>
                   <th scope="col">Name</th>
+                  <th scope="col">Description</th>
                   <th scope="col">Type</th>
                   <th scope="col">Repo</th>
                   <th scope="col">Environment Config</th>
@@ -46,6 +63,9 @@
                     <a :href="'/projects/'+project.id+'/systems/'+system.id">
                       {{system.name}}
                     </a>
+                  </td>
+                  <td>
+                    {{system.description}}
                   </td>
                   <td>
                     {{system.system_type}}
@@ -95,6 +115,10 @@
           <div class="form-group">
             <label for="systemName">System Name</label>
             <input type="text" class="form-control" id="systemName" aria-describedby="systemNameHelp" v-model='systemForm.name'>
+          </div>
+          <div class="form-group">
+            <label for="description"> Description </label>
+            <textarea class='form-control' id="description" v-model="systemForm.description"></textarea>
           </div>
           <div class="form-group">
             <label for="systemType">System Type</label>
@@ -154,7 +178,10 @@
     data: {
       projectID: null,
       systems: [],
-      project: {},
+      project: {
+        name: '',
+        description: ''
+      },
       systemForm: {
         name: '',
         system_type: '',
@@ -197,6 +224,19 @@
         $.get("/api/v1/projects/"+projectID+"/systems/", function(data){
           that.systems = data['results'];
         });
+      },
+      saveProject: function(){
+        var that = this;
+        $.ajax({
+          url: "/api/v1/projects/"+this.projectID+"/",
+          type: 'PUT',
+          success: function(data){
+            alert("Saved!");
+            that.project = data;
+          },
+          data: that.project
+        });
+
       },
       addSystem: function(){
         var that = this;
