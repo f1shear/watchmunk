@@ -5,6 +5,7 @@ from apps.user.models import UserModel
 class ProjectModel(models.Model):
 
     name = models.CharField(max_length=255)
+    description = models.TextField(default='', blank=True)
 
     class Meta:
         db_table = 'project'
@@ -35,6 +36,7 @@ class SystemModel(models.Model):
     project = models.ForeignKey(
         'system.ProjectModel', related_name='project_systems',
         null=True, blank=True, on_delete=models.CASCADE)
+    description = models.TextField(default='', blank=True)
     name = models.CharField(max_length=255)
     system_type = models.CharField(
         max_length=255, choices=SYSTEM_TYPES)
