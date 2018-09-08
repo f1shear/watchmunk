@@ -1,8 +1,9 @@
 {% extends "base/base.html" %}
 {% block page %}
 
-      <div class="page">
-        
+{% verbatim %}
+      <div id="projectDetailVue">
+
         <div class='row'>
           <div class='col'>
 
@@ -13,14 +14,17 @@
             <h4>
               <a href='/dashboard'> Projects </a>
               > 
-              <a href='/projects/{{project.id}}' class='text-muted'> {{project.name}} </a>
+              <a :href='"/projects/"+project.id' class='text-muted'> {{project.name}} </a>
             </h4>
 
           </div>
         </div>
         <div class='row'>
-          <div class='col'>
+          <div class='col-md-3'>
+          </div>
+          <div class='col-md-9'>
             <br>
+            <h4> Systems </h4>
             <table class="table">
               <thead class="thead-dark">
                 <tr>
@@ -33,15 +37,13 @@
                   <th scope="col">API Info</th>
                   <th scope="col">Documentation</th>
                   <th scope="col">Author</th>
-                  <th scope="col">Moderators</th>
-                  <th scope="col">Dependencies</th>
                 </tr>
               </thead>
               <tbody>
-                {% for system in systems %}
-                <tr>
+
+                <tr v-for='system in systems'>
                   <td>
-                    <a href='/projects/{{project.id}}/systems/{{system.id}}'>
+                    <a :href="'/projects/'+project.id+'/systems/'+system.id">
                       {{system.name}}
                     </a>
                   </td>
@@ -67,34 +69,20 @@
                     {{system.deployment_type}}
                   </td>
                   <td>
-                    {{system.author}}
-                  </td>
-                  <td>
-                    {% for moderator in system.moderators.all %}
-                      {{moderator.moderator.username}} <br>
-                    {% endfor %}
-                  </td>
-                  <td>
-                    {% for dep in system.dependencies.all %}
-                      <a href='/projects/{{project.id}}/systems/{{dep.id}}'>
-                        {{dep.depends_on.name}}
-                      </a>
-                      [{{dep.depends_on.system_type}}]
-                      <br>
-                    {% endfor %}
+                    {{system.author.username}}
                   </td>
 
                 </tr>
-                {% endfor %}
+
               </tbody>
             </table>
           </div>
         </div>
-      </div>
+
 
 
 <div class="modal fade" id="addSystemModal" tabindex="-1" role="dialog" aria-labelledby="addSystemModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog  modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="addSystemModalLabel">New System</h5>
@@ -103,18 +91,142 @@
         </button>
       </div>
       <div class="modal-body">
-        <form>
+        <form v-on:submit.prevent="addSystem">
           <div class="form-group">
             <label for="systemName">System Name</label>
-            <input type="text" class="form-control" id="systemName" aria-describedby="systemNameHelp" placeholder="Enter system name..">
+            <input type="text" class="form-control" id="systemName" aria-describedby="systemNameHelp" v-model='systemForm.name'>
           </div>
+          <div class="form-group">
+            <label for="systemType">System Type</label>
+            <select id='systemType' v-model='systemForm.system_type' class='form-control'>
+              <option value=''>----</option>
+              <option v-for="option in systemTypes" v-bind:value="option.type">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="deploymentType"> Deployment Type </label>
+            <select id='systemType' v-model='systemForm.deployment_type' class='form-control'>
+              <option value=''>----</option>
+              <option v-for="option in deploymentTypes" v-bind:value="option.type">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="repoInfo"> Repository Info </label>
+            <textarea  class='form-control'  id="repoInfo" v-model="systemForm.repo_info"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="environmentConfig"> Environment Config </label>
+            <textarea  class='form-control'  id="environmentConfig" v-model="systemForm.environment_config"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="stagingInfo"> Staging Info </label>
+            <textarea  class='form-control'  id="stagingInfo" v-model="systemForm.staging_info"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="productionInfo"> Production Info </label>
+            <textarea  class='form-control'  id="productionInfo" v-model="systemForm.production_info"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="apiInfo"> API Info </label>
+            <textarea  class='form-control'  id="apiInfo" v-model="systemForm.api_info"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="documentation"> Documentation </label>
+            <textarea class='form-control' id="documentation" v-model="systemForm.documentation"></textarea>
+          </div>
+
           <button type="submit" class="btn btn-primary">Save</button>
+
         </form>
       </div>
 
     </div>
   </div>
 </div>
+      </div>
+<script type="text/javascript">
+  var projectDetailVue = new Vue({
+    el: '#projectDetailVue',
+    data: {
+      projectID: null,
+      systems: [],
+      project: {},
+      systemForm: {
+        name: '',
+        system_type: '',
+        repo_info: '',
+        environment_config: '',
+        staging_info: '',
+        production_info: '',
+        api_info: '',
+        documentation: '',
+        deployment_type: ''
+      },
+      deploymentTypes: [
+        {'type': 'shared', 'label': 'Shared Hosting'},
+        {'type': 'dedicated', 'label': 'Dedicated Server'},
+        {'type': 'vm', 'label': 'Virtual Machine'},
+        {'type': 'container', 'label': 'Container'},
+        {'type': 'service', 'label': 'Service'},
+      ],
+      systemTypes: [
+        {'type': 'worker', 'label': 'Worker'},
+        {'type': 'system', 'label': 'System'},
+        {'type': 'storage', 'label': 'Storage'},
+        {'type': 'queue', 'label': 'Queue'},
+        {'type': 'database', 'label': 'Database'},
+        {'type': 'web', 'label': 'Web'},
+        {'type': 'client/web', 'label': 'Web Client'},
+        {'type': 'client/desktop', 'label': 'Desktop Client'},
+        {'type': 'client/mobile', 'label': 'Mobile Client'}
+      ]
+    },
+    methods: {
+      loadProject: function(projectID){
+        var that = this;
+        $.get("/api/v1/projects/"+projectID, function(data){
+          that.project = data;
+        });
+      },
+      loadSystems: function(projectID){
+        var that = this;
+        $.get("/api/v1/projects/"+projectID+"/systems/", function(data){
+          that.systems = data['results'];
+        });
+      },
+      addSystem: function(){
+        var that = this;
+        $.post("/api/v1/projects/"+this.projectID+"/systems/", that.systemForm, function(data){
+          alert("Added System!");
+          that.loadSystems(that.projectID);
+          $('#addSystemModal').modal('hide');
+        });
+      },
+      extractURLInfo: function(){
+        var path = window.location.pathname.split('/');
+        var trailingPad = 0;
+        if(path[path.length-1] == ''){
+          trailingPad = 1;
+        }
+        return {
+          projectID: path[path.length-1-trailingPad]
+        };
+      }
+    },
+    mounted: function(){
+      var urlInfo = this.extractURLInfo();
+      this.projectID = urlInfo['projectID'];
+      this.loadProject(urlInfo['projectID']);
+      this.loadSystems(urlInfo['projectID']);
+    }
+  });
 
+</script>
+
+{% endverbatim %}
 
 {% endblock %}
