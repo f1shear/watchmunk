@@ -51,6 +51,11 @@ class SystemList(generics.ListCreateAPIView):
     serializer_class = SystemSerializer
     permission_classes = (IsAuthenticated, )
 
+    def get_queryset(self):
+        project_id = self.kwargs.get('project_id')
+        return SystemModel.objects.filter(
+            project_id=project_id).select_related('author')
+
 
 class SystemDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SystemModel.objects.all()
