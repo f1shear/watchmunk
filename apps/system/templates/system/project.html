@@ -2,12 +2,20 @@
 {% block page %}
 
       <div class="page">
+        
         <div class='row'>
           <div class='col'>
 
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addSystemModal">
+            <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addSystemModal">
               Add System
             </button>
+
+            <h4>
+              <a href='/dashboard'> Projects </a>
+              > 
+              <a href='/projects/{{project.id}}' class='text-muted'> {{project.name}} </a>
+            </h4>
+
           </div>
         </div>
         <div class='row'>
