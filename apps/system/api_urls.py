@@ -25,7 +25,7 @@ urlpatterns = [
     path('<int:project_id>/systems/<int:pk>/', SystemDetail.as_view()),
 
     path(
-        '<int:project_id>/systems/<int:pk>/dependencies/',
+        '<int:project_id>/systems/<int:system_id>/dependencies/',
         SystemDependencyList.as_view()),
     path(
         '<int:project_id>/systems/<int:system_id>/dependencies/<int:pk>/',
