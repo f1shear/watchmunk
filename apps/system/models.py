@@ -70,6 +70,7 @@ class SystemModeratorModel(models.Model):
 
     class Meta:
         db_table = 'system_moderator'
+        unique_together = (('system', 'moderator'), )
 
 
 class SystemDependencyModel(models.Model):
@@ -82,6 +83,7 @@ class SystemDependencyModel(models.Model):
 
     class Meta:
         db_table = 'system_dependency'
+        unique_together = (('system', 'depends_on'), )
 
 
 class AppModel(models.Model):
@@ -104,6 +106,7 @@ class ProjectAppModel(models.Model):
 
     class Meta:
         db_table = 'project_app'
+        unique_together = (('project', 'app'), )
 
 
 class SystemAppModel(models.Model):
@@ -116,3 +119,4 @@ class SystemAppModel(models.Model):
 
     class Meta:
         db_table = 'system_app'
+        unique_together = (('system', 'app'), )
