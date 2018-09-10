@@ -37,6 +37,24 @@
                 <button type="submit" class="btn btn-primary">Save</button>
 
             </form>
+            <hr>
+            <h4> Apps/Integrations </h4>
+
+            <select id='selectedApp' class='form-control' v-model='selectedApp' v-on:change='onChangeSelectedApp'>
+                  <option value='' selected> ---- </option>
+                  <option v-for='app in projectApps' :value='app.app'>
+                    {{app.app.name}}
+                  </option>
+                </select> <hr>
+
+                <div v-for='post in appPosts'>
+                    {{post}}
+                </div>
+                <p v-if='selectedApp != "" && appPosts.length==0'>
+                  No app posts!
+                </p>
+
+
           </div>
           <div class='col-md-9'>
             <br>
@@ -182,6 +200,9 @@
         name: '',
         description: ''
       },
+      projectApps: [],
+      selectedApp: [],
+      appPosts: [],
       systemForm: {
         name: '',
         system_type: '',
@@ -255,13 +276,53 @@
         return {
           projectID: path[path.length-1-trailingPad]
         };
-      }
+      },
+      loadProjectApps: function(projectID){
+
+        var that = this;
+        $.ajax({
+          url: "/api/v1/projects/"+projectID+"/apps/",
+          type: 'GET',
+          success: function(data){
+            that.projectApps = data['results'];            
+          }
+        });
+
+      },
+      onChangeSelectedApp: function($event){
+        if(this.selectedApp==''){
+          return;
+        }
+        this.loadAppPosts();
+      },
+      loadAppPosts: function(){
+        var that = this;
+        $.ajax({
+          url: "/api/v1/projects/"+this.projectID+"/apps/"+this.selectedApp.id+"/posts/",
+          type: 'GET',
+          success: function(data){
+            var appPosts = data['results'];
+            var template = that.selectedApp.message_template;
+            that.appPosts = [];
+            console.log(template);
+
+            for(var i=0; i < appPosts.length; i++){
+              console.log(appPosts[i].post);
+              var post = JSON.parse(appPosts[i].post);
+              msg = Mustache.render(template, post);
+              that.appPosts.push(msg);
+            }
+          }
+        });
+      },
+
     },
     mounted: function(){
       var urlInfo = this.extractURLInfo();
       this.projectID = urlInfo['projectID'];
       this.loadProject(urlInfo['projectID']);
       this.loadSystems(urlInfo['projectID']);
+      this.loadProjectApps(urlInfo['projectID']);
     }
   });
 
