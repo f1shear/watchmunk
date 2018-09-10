@@ -3,6 +3,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
 from .models import (
+    AppModel,
     ProjectModel,
     ProjectAppModel,
     ProjectAppPostModel,
@@ -15,6 +16,7 @@ from .models import (
 
 
 from .serializers import (
+    AppSerializer,
     ProjectSerializer,
     ProjectAppSerializer,
     ProjectAppPostSerializer,
@@ -24,6 +26,18 @@ from .serializers import (
     SystemAppSerializer,
     SystemAppPostSerializer,
 )
+
+
+class AppList(generics.ListCreateAPIView):
+    queryset = AppModel.objects.all()
+    serializer_class = AppSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+class AppDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = AppModel.objects.all()
+    serializer_class = AppSerializer
+    permission_classes = (IsAuthenticated, )
 
 
 class ProjectList(generics.ListCreateAPIView):
