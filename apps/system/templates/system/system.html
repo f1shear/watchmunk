@@ -110,13 +110,13 @@
             <div class='card'>
               <div class='card-body'>
                 <b> Integrations </b> <hr>
-                <select id='selectedApp' class='form-control' v-model='selectedApp'>
+                <select id='selectedApp' class='form-control' v-model='selectedApp' v-on:change='onChangeSelectedApp'>
                   <option value='' selected> ---- </option>
                   <option v-for='app in systemApps' :value='app.app.id'>
                     {{app.app.name}}
                   </option>
                 </select> <hr>
-                
+
               </div>
             </div>
           </div>
@@ -166,7 +166,8 @@
         {'type': 'client/desktop', 'label': 'Desktop Client'},
         {'type': 'client/mobile', 'label': 'Mobile Client'}
       ],
-      selectedApp: ''
+      selectedApp: '',
+      appPosts: [],
     },
     methods: {
       loadProject: function(projectID){
@@ -222,7 +223,19 @@
             that.systemApps = data['results'];            
           }
         });
-
+      },
+      onChangeSelectedApp: function($event){
+        this.loadAppPosts();
+      },
+      loadAppPosts: function(){
+        var that = this;
+        $.ajax({
+          url: "/api/v1/projects/"+this.projectID+"/systems/"+this.systemID+"/apps/"+this.selectedApp+"/posts/",
+          type: 'GET',
+          success: function(data){
+            that.systemApps = data['results'];            
+          }
+        });
       },
     },
     mounted: function(){
@@ -233,7 +246,6 @@
       this.loadProject(urlInfo['projectID']);
       this.loadSystem(urlInfo['projectID'], urlInfo['systemID']);
       this.loadSystemApps(urlInfo['projectID'], urlInfo['systemID']);
-
     }
   });
 

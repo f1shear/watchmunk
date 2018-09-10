@@ -6,7 +6,7 @@ from apps.system.views import (
 
 
 urlpatterns = [
-    path('/', ProjectPage.as_view()),
+    path('', ProjectPage.as_view()),
     path('<int:project_id>/', ProjectPage.as_view()),
     path('<int:project_id>/systems/<int:system_id>/', SystemPage.as_view()),
 ]
