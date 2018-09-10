@@ -27,5 +27,6 @@ urlpatterns = [
     path('', LandingPage.as_view()),
     path('dashboard/', DashboardPage.as_view()),
     path('projects/', include('apps.system.urls')),
-    path('api/v1/projects/', include('apps.system.api_urls')),
+    path('api/v1/', include('apps.system.api_urls')),
+    path('api/v1/users/', include('apps.user.api_urls')),
 ]
