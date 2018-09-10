@@ -112,10 +112,14 @@
                 <b> Integrations </b> <hr>
                 <select id='selectedApp' class='form-control' v-model='selectedApp' v-on:change='onChangeSelectedApp'>
                   <option value='' selected> ---- </option>
-                  <option v-for='app in systemApps' :value='app.app.id'>
+                  <option v-for='app in systemApps' :value='app.app'>
                     {{app.app.name}}
                   </option>
                 </select> <hr>
+
+                <div v-for='post in appPosts'>
+                    {{post}}
+                </div>
 
               </div>
             </div>
@@ -230,10 +234,20 @@
       loadAppPosts: function(){
         var that = this;
         $.ajax({
-          url: "/api/v1/projects/"+this.projectID+"/systems/"+this.systemID+"/apps/"+this.selectedApp+"/posts/",
+          url: "/api/v1/projects/"+this.projectID+"/systems/"+this.systemID+"/apps/"+this.selectedApp.id+"/posts/",
           type: 'GET',
           success: function(data){
-            that.systemApps = data['results'];            
+            var appPosts = data['results'];
+            var template = that.selectedApp.message_template;
+            that.appPosts = [];
+            console.log(template);
+
+            for(var i=0; i < appPosts.length; i++){
+              console.log(appPosts[i].post);
+              var post = JSON.parse(appPosts[i].post);
+              msg = Mustache.render(template, post);
+              that.appPosts.push(msg);
+            }
           }
         });
       },
