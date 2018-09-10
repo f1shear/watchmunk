@@ -1,65 +1,243 @@
 {% extends "base/base.html" %}
 
 {% block page %}
-  <div class="page">
-        <div class='row'>
-          <div class='col'>
 
+{% verbatim %}
+
+<div id='systemDetailVue'>
+        <div class='row' v-if='project!=null'>
+          <div class='col'>
+            
+            <h4>
+              <a href='/dashboard'> Projects </a>
+              > 
+              <a :href='"/projects/"+project.id' class='text-muted'> {{project.name}} </a>
+            </h4>
 
           </div>
         </div>
 
         <div class='row'>
 
-          <div class='col-md-3'>
+          <div class='col-md-6'>
             <br>
             <div class="card">
             <div class="card-body">
-              {{system.name}}
+            
 
-              <span class='badge badge-primary'>
-                {{system.system_type}}
-              </span>
-              &nbsp;&nbsp;
-              <span class='badge badge-primary'>
-                {{system.deployment_type}}
-              </span>
-              <hr>
-              <p> <b> Author </b> {{system.author.username}} </p>
-              <hr>
-              <p> <b> Repo </b> {{system.repo_info}} </p>
-              <p> <b> Environment Configuration </b> {{system.environment_config}} </p>
-              <p> <b> Staging Info </b> {{system.staging_info}} </p>
-              <p> <b> Production Info </b> {{system.production_info}} </p>
-              <p> <b> API Info </b> {{system.api_info}} </p>
+              <form v-on:submit.prevent="saveSystem">
+
+                <div class='row'>
+
+                  <div class='col-md-4'>
+
+                    <div class="form-group">
+            <label for="systemName">System Name</label>
+            <input type="text" class="form-control" id="systemName" aria-describedby="systemNameHelp" v-model='system.name'>
+          </div>
+          <div class="form-group">
+            <label for="description"> Description </label>
+            <textarea class='form-control' id="description" v-model="system.description"></textarea>
+          </div>
+           <div class="form-group">
+            <label for="deploymentType"> Deployment Type </label>
+            <select id='systemType' v-model='system.deployment_type' class='form-control'>
+              <option value=''>----</option>
+              <option v-for="option in deploymentTypes" v-bind:value="option.type">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="systemType">System Type</label>
+            <select id='systemType' v-model='system.system_type' class='form-control'>
+              <option value=''>----</option>
+              <option v-for="option in systemTypes" v-bind:value="option.type">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="documentation"> Documentation </label>
+            <textarea class='form-control' id="documentation" v-model="system.documentation"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="apiInfo"> API Info </label>
+            <textarea  class='form-control'  id="apiInfo" v-model="system.api_info"></textarea>
+          </div>
+
+                  </div>
+
+                  <div class='col-md-8'>
+
+                   
+          <div class="form-group">
+            <label for="repoInfo"> Repository Info </label>
+            <textarea  class='form-control'  id="repoInfo" v-model="system.repo_info"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="environmentConfig"> Environment Config </label>
+            <textarea  class='form-control'  id="environmentConfig" v-model="system.environment_config"></textarea>
+          </div>
+                    <div class="form-group">
+            <label for="stagingInfo"> Staging Info </label>
+            <textarea  class='form-control'  id="stagingInfo" v-model="system.staging_info"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="productionInfo"> Production Info </label>
+            <textarea  class='form-control'  id="productionInfo" v-model="system.production_info"></textarea>
+          </div>
+          
+          
+                  </div>
+
+                </div>
+
+          
+          
+          
+
+          <button type="submit" class="btn btn-primary">Save</button>
+  
+        </form>
+
             </div>
           </div>
           </div>
 
-          <div class='col-md-9'>
+          <div class='col-md-6'>
             <br>
             <div class='card'>
               <div class='card-body'>
                 <b> Integrations </b> <hr>
-                <div class='row'>
-                  <div class='col-md-3'>
-                    <ul class="list-group">
-                    <li class="list-group-item"> Bitbucket </li>
-                    <li class="list-group-item"> Github </li>
-                    <li class="list-group-item active"> Trello </li>
-                    <li class="list-group-item"> Jira </li>
-                    <li class="list-group-item"> Jenkins </li>
-                    <li class="list-group-item"> Travis CI </li>
-                    <li class='list-group-item'> + Add Integration </li>
-                  </ul>
-                  </div>
-                  <div class='col-md-9'>
-                  </div>
-                </div>
+                <select id='selectedApp' class='form-control' v-model='selectedApp'>
+                  <option value='' selected> ---- </option>
+                  <option v-for='app in systemApps' :value='app.app.id'>
+                    {{app.app.name}}
+                  </option>
+                </select> <hr>
+                
               </div>
             </div>
           </div>
         </div>
-  </div>
+</div>
 
+
+
+<script type="text/javascript">
+  var systemDetailVue = new Vue({
+    el: '#systemDetailVue',
+    data: {
+      projectID: null,
+      systemID: null,
+      integrations: [],
+      project: null,
+      system: {
+        name: '',
+        system_type: '',
+        repo_info: '',
+        environment_config: '',
+        staging_info: '',
+        production_info: '',
+        api_info: '',
+        documentation: '',
+        deployment_type: '',
+        author: {},
+      },
+      systemModerators: [],
+      systemApps: [],
+      systemDependencies: [],
+      deploymentTypes: [
+        {'type': 'shared', 'label': 'Shared Hosting'},
+        {'type': 'dedicated', 'label': 'Dedicated Server'},
+        {'type': 'vm', 'label': 'Virtual Machine'},
+        {'type': 'container', 'label': 'Container'},
+        {'type': 'service', 'label': 'Service'},
+      ],
+      systemTypes: [
+        {'type': 'worker', 'label': 'Worker'},
+        {'type': 'system', 'label': 'System'},
+        {'type': 'storage', 'label': 'Storage'},
+        {'type': 'queue', 'label': 'Queue'},
+        {'type': 'database', 'label': 'Database'},
+        {'type': 'web', 'label': 'Web'},
+        {'type': 'client/web', 'label': 'Web Client'},
+        {'type': 'client/desktop', 'label': 'Desktop Client'},
+        {'type': 'client/mobile', 'label': 'Mobile Client'}
+      ],
+      selectedApp: ''
+    },
+    methods: {
+      loadProject: function(projectID){
+        var that = this;
+        $.get("/api/v1/projects/"+projectID+"/", function(data){
+          that.project = data;
+        });
+      },
+      loadSystem: function(projectID, systemID){
+        var that = this;
+        $.get("/api/v1/projects/"+projectID+"/systems/"+systemID+"/", function(data){
+          that.system = data;
+        });
+      },
+      saveSystem: function(){
+        var that = this;
+        $.ajax({
+          url: "/api/v1/projects/"+this.projectID+"/systems/"+this.systemID+"/",
+          type: 'PUT',
+          success: function(data){
+            alert("Saved!");
+            that.project = data;
+          },
+          data: that.system
+        });
+
+      },
+      addSystem: function(){
+        var that = this;
+        $.post("/api/v1/projects/"+this.projectID+"/systems/", that.system, function(data){
+          alert("Added System!");
+          that.loadSystems(that.projectID);
+          $('#addSystemModal').modal('hide');
+        });
+      },
+      extractURLInfo: function(){
+        var path = window.location.pathname.split('/');
+        var trailingPad = 0;
+        if(path[path.length-1] == ''){
+          trailingPad = 1;
+        }
+        return {
+          projectID: path[path.length-1-trailingPad],
+          systemID: path[path.length-3-trailingPad],
+        };
+      },
+      loadSystemApps: function(projectID, systemID){
+        var that = this;
+        $.ajax({
+          url: "/api/v1/projects/"+projectID+"/systems/"+systemID+"/apps/",
+          type: 'GET',
+          success: function(data){
+            that.systemApps = data['results'];            
+          }
+        });
+
+      },
+    },
+    mounted: function(){
+      var urlInfo = this.extractURLInfo();
+      console.log(urlInfo);
+      this.projectID = urlInfo['projectID'];
+      this.systemID = urlInfo['systemID'];
+      this.loadProject(urlInfo['projectID']);
+      this.loadSystem(urlInfo['projectID'], urlInfo['systemID']);
+      this.loadSystemApps(urlInfo['projectID'], urlInfo['systemID']);
+
+    }
+  });
+
+
+</script>
+{% endverbatim %}
 {% endblock %}
