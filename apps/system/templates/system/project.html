@@ -1,333 +1,374 @@
 {% extends "base/base.html" %}
 {% block page %}
-
-{% verbatim %}
-      <div id="projectDetailVue">
-
-        <div class='row'>
-          <div class='col'>
-
-            <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addSystemModal">
-              Add System
-            </button>
-
-            <h4>
-              <a href='/dashboard'> Projects </a>
-              > 
-              <a :href='"/projects/"+project.id' class='text-muted'> {{project.name}} </a>
-            </h4>
-
-          </div>
-        </div>
-        <div class='row'>
-          <div class='col-md-3'>
-            <br>
-            <h4> Detail </h4>
-            <form v-on:submit.prevent="saveProject">
-
-                <div class="form-group">
-                  <label for="projectName">Project Name</label>
-                  <input type="text" class="form-control" id="projectName" aria-describedby="systemNameHelp" v-model='project.name'>
-                </div>
-                <div class="form-group">
-                  <label for="description"> Description </label>
-                  <textarea class='form-control' id="description" v-model="project.description"></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Save</button>
-
-            </form>
-            <hr>
-            <h4> Apps/Integrations </h4>
-
-            <select id='selectedApp' class='form-control' v-model='selectedApp' v-on:change='onChangeSelectedApp'>
-                  <option value='' selected> ---- </option>
-                  <option v-for='app in projectApps' :value='app.app'>
-                    {{app.app.name}}
-                  </option>
-                </select> <hr>
-
-                <div v-for='post in appPosts'>
-                    {{post}}
-                </div>
-                <p v-if='selectedApp != "" && appPosts.length==0'>
-                  No app posts!
-                </p>
-
-
-          </div>
-          <div class='col-md-9'>
-            <br>
-            <h4> Systems </h4>
-            <table class="table">
-              <thead class="thead-dark">
-                <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">Description</th>
-                  <th scope="col">Type</th>
-                  <th scope="col">Repo</th>
-                  <th scope="col">Environment Config</th>
-                  <th scope="col">Staging Info</th>
-                  <th scope="col">Production Info</th>
-                  <th scope="col">API Info</th>
-                  <th scope="col">Documentation</th>
-                  <th scope="col">Author</th>
-                </tr>
-              </thead>
-              <tbody>
-
-                <tr v-for='system in systems'>
-                  <td>
-                    <a :href="'/projects/'+project.id+'/systems/'+system.id">
-                      {{system.name}}
-                    </a>
-                  </td>
-                  <td>
-                    {{system.description}}
-                  </td>
-                  <td>
-                    {{system.system_type}}
-                  </td>
-                  <td>
-                    {{system.repo_info}}
-                  </td>
-                  <td>
-                    {{system.environment_config}}
-                  </td>
-                  <td>
-                    {{system.staging_info}}
-                  </td>
-                  <td>
-                    {{system.production_info}}
-                  </td>
-                  <td>
-                    {{system.api_info}}
-                  </td>
-                  <td>
-                    {{system.deployment_type}}
-                  </td>
-                  <td>
-                    {{system.author.username}}
-                  </td>
-
-                </tr>
-
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-
-
-<div class="modal fade" id="addSystemModal" tabindex="-1" role="dialog" aria-labelledby="addSystemModalLabel" aria-hidden="true">
-  <div class="modal-dialog  modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addSystemModalLabel">New System</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+  {% verbatim %}
+  <div id="projectDetailVue">
+    <div class='row'>
+      <div class='col'>
+        <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addSystemModal">
+        Add System
         </button>
+        <h4>
+        <a href='/dashboard'> Projects </a>
+        >
+        <a :href='"/projects/"+project.id' class='text-muted'> {{project.name}} </a>
+        </h4>
       </div>
-      <div class="modal-body">
-        <form v-on:submit.prevent="addSystem">
+    </div>
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Systems</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Project Detail</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Apps/Integrations</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+      <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Description</th>
+              <th scope="col">Type</th>
+              <th scope="col">Repo</th>
+              <th scope="col">Environment Config</th>
+              <th scope="col">Staging Info</th>
+              <th scope="col">Production Info</th>
+              <th scope="col">API Info</th>
+              <th scope="col">Documentation</th>
+              <th scope="col">Author</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for='system in systems'>
+              <td>
+                <a :href="'/projects/'+project.id+'/systems/'+system.id">
+                  {{system.name}}
+                </a>
+              </td>
+              <td>
+                {{system.description}}
+              </td>
+              <td>
+                {{system.system_type}}
+              </td>
+              <td>
+                {{system.repo_info}}
+              </td>
+              <td>
+                {{system.environment_config}}
+              </td>
+              <td>
+                {{system.staging_info}}
+              </td>
+              <td>
+                {{system.production_info}}
+              </td>
+              <td>
+                {{system.api_info}}
+              </td>
+              <td>
+                {{system.deployment_type}}
+              </td>
+              <td>
+                {{system.author.username}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+      </div>
+      <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+        <form v-on:submit.prevent="saveProject">
           <div class="form-group">
-            <label for="systemName">System Name</label>
-            <input type="text" class="form-control" id="systemName" aria-describedby="systemNameHelp" v-model='systemForm.name'>
+            <label for="projectName">Project Name</label>
+            <input type="text" class="form-control" id="projectName" aria-describedby="systemNameHelp" v-model='project.name'>
           </div>
           <div class="form-group">
             <label for="description"> Description </label>
-            <textarea class='form-control' id="description" v-model="systemForm.description"></textarea>
+            <textarea class='form-control' id="description" v-model="project.description"></textarea>
           </div>
-          <div class="form-group">
-            <label for="systemType">System Type</label>
-            <select id='systemType' v-model='systemForm.system_type' class='form-control'>
-              <option value=''>----</option>
-              <option v-for="option in systemTypes" v-bind:value="option.type">
-                {{ option.label }}
-              </option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="deploymentType"> Deployment Type </label>
-            <select id='systemType' v-model='systemForm.deployment_type' class='form-control'>
-              <option value=''>----</option>
-              <option v-for="option in deploymentTypes" v-bind:value="option.type">
-                {{ option.label }}
-              </option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="repoInfo"> Repository Info </label>
-            <textarea  class='form-control'  id="repoInfo" v-model="systemForm.repo_info"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="environmentConfig"> Environment Config </label>
-            <textarea  class='form-control'  id="environmentConfig" v-model="systemForm.environment_config"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="stagingInfo"> Staging Info </label>
-            <textarea  class='form-control'  id="stagingInfo" v-model="systemForm.staging_info"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="productionInfo"> Production Info </label>
-            <textarea  class='form-control'  id="productionInfo" v-model="systemForm.production_info"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="apiInfo"> API Info </label>
-            <textarea  class='form-control'  id="apiInfo" v-model="systemForm.api_info"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="documentation"> Documentation </label>
-            <textarea class='form-control' id="documentation" v-model="systemForm.documentation"></textarea>
-          </div>
-
           <button type="submit" class="btn btn-primary">Save</button>
-
         </form>
+        
       </div>
+      <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+        
+        <div class='row'>
+        <div class='col-md-3'>
+          <br><br>
+          <ul class="list-group">
+            <li class="list-group-item" v-for='app in projectApps'  v-bind:class="{ active: selectedApp.id == app.app.id }" v-on:click='setSelectedApp(app)'>
+              {{app.app.name}}
+            </li>
+          </ul>
+        </div>
 
+        <div class='col-md-9'>
+
+          <div v-if='selectedApp==""'>
+            <br><br>
+            No app selected.
+          </div>
+          <div v-if='selectedApp!=""'>
+            <b> App Posts </b> <hr>
+            <div v-for='post in appPosts'>
+              {{post}}
+            </div>
+            <p v-if='selectedApp != "" && appPosts.length==0'>
+              No app posts!
+            </p>
+          </div>
+        </div>
+      </div>
+        
+      </div>
+    </div>
+    <div class="modal fade" id="addSystemModal" tabindex="-1" role="dialog" aria-labelledby="addSystemModalLabel" aria-hidden="true">
+      <div class="modal-dialog  modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addSystemModalLabel">New System</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form v-on:submit.prevent="addSystem">
+              <div class="form-group">
+                <label for="systemName">System Name</label>
+                <input type="text" class="form-control" id="systemName" aria-describedby="systemNameHelp" v-model='systemForm.name'>
+              </div>
+              <div class="form-group">
+                <label for="description"> Description </label>
+                <textarea class='form-control' id="description" v-model="systemForm.description"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="systemType">System Type</label>
+                <select id='systemType' v-model='systemForm.system_type' class='form-control'>
+                  <option value=''>----</option>
+                  <option v-for="option in systemTypes" v-bind:value="option.type">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="deploymentType"> Deployment Type </label>
+                <select id='systemType' v-model='systemForm.deployment_type' class='form-control'>
+                  <option value=''>----</option>
+                  <option v-for="option in deploymentTypes" v-bind:value="option.type">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="repoInfo"> Repository Info </label>
+                <textarea  class='form-control'  id="repoInfo" v-model="systemForm.repo_info"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="environmentConfig"> Environment Config </label>
+                <textarea  class='form-control'  id="environmentConfig" v-model="systemForm.environment_config"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="stagingInfo"> Staging Info </label>
+                <textarea  class='form-control'  id="stagingInfo" v-model="systemForm.staging_info"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="productionInfo"> Production Info </label>
+                <textarea  class='form-control'  id="productionInfo" v-model="systemForm.production_info"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="apiInfo"> API Info </label>
+                <textarea  class='form-control'  id="apiInfo" v-model="systemForm.api_info"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="documentation"> Documentation </label>
+                <textarea class='form-control' id="documentation" v-model="systemForm.documentation"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-      </div>
-<script type="text/javascript">
+  <script type="text/javascript">
   var projectDetailVue = new Vue({
-    el: '#projectDetailVue',
-    data: {
-      projectID: null,
-      systems: [],
-      project: {
-        name: '',
-        description: ''
-      },
-      projectApps: [],
-      selectedApp: [],
-      appPosts: [],
-      systemForm: {
-        name: '',
-        system_type: '',
-        repo_info: '',
-        environment_config: '',
-        staging_info: '',
-        production_info: '',
-        api_info: '',
-        documentation: '',
-        deployment_type: ''
-      },
-      deploymentTypes: [
-        {'type': 'shared', 'label': 'Shared Hosting'},
-        {'type': 'dedicated', 'label': 'Dedicated Server'},
-        {'type': 'vm', 'label': 'Virtual Machine'},
-        {'type': 'container', 'label': 'Container'},
-        {'type': 'service', 'label': 'Service'},
-      ],
-      systemTypes: [
-        {'type': 'worker', 'label': 'Worker'},
-        {'type': 'system', 'label': 'System'},
-        {'type': 'storage', 'label': 'Storage'},
-        {'type': 'queue', 'label': 'Queue'},
-        {'type': 'database', 'label': 'Database'},
-        {'type': 'web', 'label': 'Web'},
-        {'type': 'client/web', 'label': 'Web Client'},
-        {'type': 'client/desktop', 'label': 'Desktop Client'},
-        {'type': 'client/mobile', 'label': 'Mobile Client'}
-      ]
-    },
-    methods: {
-      loadProject: function(projectID){
-        var that = this;
-        $.get("/api/v1/projects/"+projectID, function(data){
-          that.project = data;
-        });
-      },
-      loadSystems: function(projectID){
-        var that = this;
-        $.get("/api/v1/projects/"+projectID+"/systems/", function(data){
-          that.systems = data['results'];
-        });
-      },
-      saveProject: function(){
-        var that = this;
-        $.ajax({
-          url: "/api/v1/projects/"+this.projectID+"/",
-          type: 'PUT',
-          success: function(data){
-            alert("Saved!");
-            that.project = data;
+      el: '#projectDetailVue',
+      data: {
+          projectID: null,
+          systems: [],
+          project: {
+              name: '',
+              description: ''
           },
-          data: that.project
-        });
-
+          projectApps: [],
+          selectedApp: '',
+          appPosts: [],
+          systemForm: {
+              name: '',
+              system_type: '',
+              repo_info: '',
+              environment_config: '',
+              staging_info: '',
+              production_info: '',
+              api_info: '',
+              documentation: '',
+              deployment_type: ''
+          },
+          deploymentTypes: [{
+                  'type': 'shared',
+                  'label': 'Shared Hosting'
+              },
+              {
+                  'type': 'dedicated',
+                  'label': 'Dedicated Server'
+              },
+              {
+                  'type': 'vm',
+                  'label': 'Virtual Machine'
+              },
+              {
+                  'type': 'container',
+                  'label': 'Container'
+              },
+              {
+                  'type': 'service',
+                  'label': 'Service'
+              },
+          ],
+          systemTypes: [{
+                  'type': 'worker',
+                  'label': 'Worker'
+              },
+              {
+                  'type': 'system',
+                  'label': 'System'
+              },
+              {
+                  'type': 'storage',
+                  'label': 'Storage'
+              },
+              {
+                  'type': 'queue',
+                  'label': 'Queue'
+              },
+              {
+                  'type': 'database',
+                  'label': 'Database'
+              },
+              {
+                  'type': 'web',
+                  'label': 'Web'
+              },
+              {
+                  'type': 'client/web',
+                  'label': 'Web Client'
+              },
+              {
+                  'type': 'client/desktop',
+                  'label': 'Desktop Client'
+              },
+              {
+                  'type': 'client/mobile',
+                  'label': 'Mobile Client'
+              }
+          ]
       },
-      addSystem: function(){
-        var that = this;
-        $.post("/api/v1/projects/"+this.projectID+"/systems/", that.systemForm, function(data){
-          alert("Added System!");
-          that.loadSystems(that.projectID);
-          $('#addSystemModal').modal('hide');
-        });
+      methods: {
+          loadProject: function(projectID) {
+              var that = this;
+              $.get("/api/v1/projects/" + projectID, function(data) {
+                  that.project = data;
+              });
+          },
+          loadSystems: function(projectID) {
+              var that = this;
+              $.get("/api/v1/projects/" + projectID + "/systems/", function(data) {
+                  that.systems = data['results'];
+              });
+          },
+          saveProject: function() {
+              var that = this;
+              $.ajax({
+                  url: "/api/v1/projects/" + this.projectID + "/",
+                  type: 'PUT',
+                  success: function(data) {
+                      alert("Saved!");
+                      that.project = data;
+                  },
+                  data: that.project
+              });
+          },
+          addSystem: function() {
+              var that = this;
+              $.post("/api/v1/projects/" + this.projectID + "/systems/", that.systemForm, function(data) {
+                  alert("Added System!");
+                  that.loadSystems(that.projectID);
+                  $('#addSystemModal').modal('hide');
+              });
+          },
+          extractURLInfo: function() {
+              var path = window.location.pathname.split('/');
+              var trailingPad = 0;
+              if (path[path.length - 1] == '') {
+                  trailingPad = 1;
+              }
+              return {
+                  projectID: path[path.length - 1 - trailingPad]
+              };
+          },
+          loadProjectApps: function(projectID) {
+              var that = this;
+              $.ajax({
+                  url: "/api/v1/projects/" + projectID + "/apps/",
+                  type: 'GET',
+                  success: function(data) {
+                      that.projectApps = data['results'];
+                  }
+              });
+          },
+          onChangeSelectedApp: function($event) {
+              if (this.selectedApp == '') {
+                  return;
+              }
+              this.loadAppPosts();
+          },
+          setSelectedApp: function(app){
+            this.selectedApp = app;
+            this.loadAppPosts;
+          },
+          loadAppPosts: function() {
+              var that = this;
+              $.ajax({
+                  url: "/api/v1/projects/" + this.projectID + "/apps/" + this.selectedApp.id + "/posts/",
+                  type: 'GET',
+                  success: function(data) {
+                      var appPosts = data['results'];
+                      var template = that.selectedApp.message_template;
+                      that.appPosts = [];
+                      console.log(template);
+                      for (var i = 0; i < appPosts.length; i++) {
+                          console.log(appPosts[i].post);
+                          var post = JSON.parse(appPosts[i].post);
+                          msg = Mustache.render(template, post);
+                          that.appPosts.push(msg);
+                      }
+                  }
+              });
+          },
       },
-      extractURLInfo: function(){
-        var path = window.location.pathname.split('/');
-        var trailingPad = 0;
-        if(path[path.length-1] == ''){
-          trailingPad = 1;
-        }
-        return {
-          projectID: path[path.length-1-trailingPad]
-        };
-      },
-      loadProjectApps: function(projectID){
-
-        var that = this;
-        $.ajax({
-          url: "/api/v1/projects/"+projectID+"/apps/",
-          type: 'GET',
-          success: function(data){
-            that.projectApps = data['results'];            
-          }
-        });
-
-      },
-      onChangeSelectedApp: function($event){
-        if(this.selectedApp==''){
-          return;
-        }
-        this.loadAppPosts();
-      },
-      loadAppPosts: function(){
-        var that = this;
-        $.ajax({
-          url: "/api/v1/projects/"+this.projectID+"/apps/"+this.selectedApp.id+"/posts/",
-          type: 'GET',
-          success: function(data){
-            var appPosts = data['results'];
-            var template = that.selectedApp.message_template;
-            that.appPosts = [];
-            console.log(template);
-
-            for(var i=0; i < appPosts.length; i++){
-              console.log(appPosts[i].post);
-              var post = JSON.parse(appPosts[i].post);
-              msg = Mustache.render(template, post);
-              that.appPosts.push(msg);
-            }
-          }
-        });
-      },
-
-    },
-    mounted: function(){
-      var urlInfo = this.extractURLInfo();
-      this.projectID = urlInfo['projectID'];
-      this.loadProject(urlInfo['projectID']);
-      this.loadSystems(urlInfo['projectID']);
-      this.loadProjectApps(urlInfo['projectID']);
-    }
+      mounted: function() {
+          var urlInfo = this.extractURLInfo();
+          this.projectID = urlInfo['projectID'];
+          this.loadProject(urlInfo['projectID']);
+          this.loadSystems(urlInfo['projectID']);
+          this.loadProjectApps(urlInfo['projectID']);
+      }
   });
-
-</script>
-
+  </script>
 {% endverbatim %}
-
 {% endblock %}
