@@ -64,9 +64,15 @@ class SystemDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class SystemDependencyList(generics.ListCreateAPIView):
-    queryset = SystemDependencyModel.objects.all()
+
     serializer_class = SystemDependencySerializer
     permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        system_id = self.kwargs.get('system_id')
+        return SystemDependencyModel.objects.filter(
+            system_id=system_id).select_related(
+            'depends_on')
 
 
 class SystemDependencyDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -80,6 +86,12 @@ class SystemModeratorList(generics.ListCreateAPIView):
     serializer_class = SystemModeratorSerializer
     permission_classes = (IsAuthenticated, )
 
+    def get_queryset(self):
+        system_id = self.kwargs.get('system_id')
+        return SystemModeratorModel.objects.filter(
+            system_id=system_id).select_related(
+            'moderator')
+
 
 class SystemModeratorDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SystemModeratorModel.objects.all()
@@ -88,9 +100,14 @@ class SystemModeratorDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class SystemAppList(generics.ListCreateAPIView):
-    queryset = SystemAppModel.objects.all()
     serializer_class = SystemAppSerializer
     permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        system_id = self.kwargs.get('system_id')
+        return SystemAppModel.objects.filter(
+            system_id=system_id).select_related(
+            'app')
 
 
 class SystemAppDetail(generics.RetrieveUpdateDestroyAPIView):
