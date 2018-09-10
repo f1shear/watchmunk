@@ -1,6 +1,4 @@
-
 from rest_framework import serializers
-from django.db import models
 
 from .models import (
     ProjectModel,
@@ -49,6 +47,7 @@ class SystemSerializer(serializers.ModelSerializer):
             default = getattr(instance, key)
             setattr(
                 instance, key, validated_data.get(key, default))
+        instance.save()
         return instance
 
 
@@ -58,12 +57,24 @@ class SystemModeratorSerializer(serializers.ModelSerializer):
         model = SystemModeratorModel
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super(SystemModeratorSerializer, self).__init__(*args, **kwargs)
+        if 'request' in self.context:
+            if self.context['request'].method == 'GET':
+                self.fields['moderator'] = UserSerializer()
+
 
 class SystemDependencySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SystemDependencyModel
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(SystemDependencySerializer, self).__init__(*args, **kwargs)
+        if 'request' in self.context:
+            if self.context['request'].method == 'GET':
+                self.fields['depends_on'] = SystemSerializer()
 
 
 class AppSerializer(serializers.ModelSerializer):
@@ -79,9 +90,21 @@ class ProjectAppSerializer(serializers.ModelSerializer):
         model = ProjectAppModel
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super(ProjectAppSerializer, self).__init__(*args, **kwargs)
+        if 'request' in self.context:
+            if self.context['request'].method == 'GET':
+                self.fields['app'] = AppSerializer()
+
 
 class SystemAppSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SystemAppModel
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(SystemAppSerializer, self).__init__(*args, **kwargs)
+        if 'request' in self.context:
+            if self.context['request'].method == 'GET':
+                self.fields['app'] = AppSerializer()
