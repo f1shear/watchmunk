@@ -108,6 +108,21 @@ class ProjectAppModel(models.Model):
         db_table = 'project_app'
         unique_together = (('project', 'app'), )
 
+    def __str__(self):
+        return "%s %s" % (self.project.name, self.app.name)
+
+
+class ProjectAppPostModel(models.Model):
+
+    project_app = models.ForeignKey(
+        'system.ProjectAppModel', related_name='project_app_posts',
+        on_delete=models.CASCADE)
+
+    post = models.TextField()
+
+    class Meta:
+        db_table = 'project_app_post'
+
 
 class SystemAppModel(models.Model):
     system = models.ForeignKey(
@@ -120,3 +135,18 @@ class SystemAppModel(models.Model):
     class Meta:
         db_table = 'system_app'
         unique_together = (('system', 'app'), )
+
+    def __str__(self):
+        return "%s %s" % (self.system.name, self.app.name)
+
+
+class SystemAppPostModel(models.Model):
+
+    system_app = models.ForeignKey(
+        'system.SystemAppModel', related_name='system_app_posts',
+        on_delete=models.CASCADE)
+
+    post = models.TextField()
+
+    class Meta:
+        db_table = 'system_app_post'

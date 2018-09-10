@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+
 from .models import (
     ProjectModel,
     SystemModel,
@@ -7,7 +8,9 @@ from .models import (
     SystemDependencyModel,
     AppModel,
     ProjectAppModel,
+    ProjectAppPostModel,
     SystemAppModel,
+    SystemAppPostModel,
 )
 
 from apps.user.serializers import UserSerializer
@@ -108,3 +111,17 @@ class SystemAppSerializer(serializers.ModelSerializer):
         if 'request' in self.context:
             if self.context['request'].method == 'GET':
                 self.fields['app'] = AppSerializer()
+
+
+class ProjectAppPostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProjectAppPostModel
+        fields = '__all__'
+
+
+class SystemAppPostSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SystemAppPostModel
+        fields = '__all__'

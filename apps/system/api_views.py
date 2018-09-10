@@ -5,20 +5,24 @@ from rest_framework.permissions import IsAuthenticated
 from .models import (
     ProjectModel,
     ProjectAppModel,
+    ProjectAppPostModel,
     SystemModel,
     SystemDependencyModel,
     SystemModeratorModel,
     SystemAppModel,
+    SystemAppPostModel,
 )
 
 
 from .serializers import (
     ProjectSerializer,
     ProjectAppSerializer,
+    ProjectAppPostSerializer,
     SystemSerializer,
     SystemDependencySerializer,
     SystemModeratorSerializer,
     SystemAppSerializer,
+    SystemAppPostSerializer,
 )
 
 
@@ -43,6 +47,23 @@ class ProjectAppList(generics.ListCreateAPIView):
 class ProjectAppDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ProjectAppModel.objects.all()
     serializer_class = ProjectAppSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+class ProjectAppPostList(generics.ListCreateAPIView):
+    queryset = ProjectAppPostModel.objects.all()
+    serializer_class = ProjectAppPostSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        project_app_id = self.kwargs.get('project_app_id')
+        return ProjectAppPostModel.objects.filter(
+            project_app_id=project_app_id)
+
+
+class ProjectAppPostDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ProjectAppPostModel.objects.all()
+    serializer_class = ProjectAppPostSerializer
     permission_classes = (IsAuthenticated, )
 
 
@@ -113,4 +134,20 @@ class SystemAppList(generics.ListCreateAPIView):
 class SystemAppDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SystemAppModel.objects.all()
     serializer_class = SystemAppSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+class SystemAppPostList(generics.ListCreateAPIView):
+    serializer_class = SystemAppPostSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def get_queryset(self):
+        system_app_id = self.kwargs.get('system_app_id')
+        return SystemAppPostModel.objects.filter(
+            system_app_id=system_app_id)
+
+
+class SystemAppPostDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SystemAppPostModel.objects.all()
+    serializer_class = SystemAppPostSerializer
     permission_classes = (IsAuthenticated, )
