@@ -38,7 +38,13 @@
       <li class="nav-item">
         <a class="nav-link" href="#"> Support </a>
       </li>
+      {% if user.is_superuser %}
+      <li class="nav-item">
+        <a class="nav-link" href="/admin"> SuperAdmin </a>
+      </li>
+      {% endif %}
     </ul>
+
     {% if user.is_authenticated %}
          <span class="navbar-text mr-2">
             <b> <i class="fas fa-user"></i> {{user.username}} </b>
