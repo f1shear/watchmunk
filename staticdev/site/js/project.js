@@ -2,6 +2,8 @@
 
 $(document).ready(function(){
 
+
+
   var projectDetailVue = new Vue({
       el: '#projectDetailVue',
       mixins: [COMMON_MIXIN],
@@ -39,7 +41,7 @@ $(document).ready(function(){
                   url: "/api/v1/projects/" + this.projectID + "/",
                   type: 'PUT',
                   success: function(data) {
-                      alert("Saved!");
+                      $.notify("Project saved.", "success");
                       that.project = data;
                   },
                   data: that.project
@@ -48,7 +50,8 @@ $(document).ready(function(){
           addSystem: function() {
               var that = this;
               $.post("/api/v1/projects/" + this.projectID + "/systems/", that.systemForm, function(data) {
-                  alert("Added System!");
+                  $.notify("System added.", "success");
+
                   that.loadSystems(that.projectID);
                   $('#addSystemModal').modal('hide');
               });
@@ -111,6 +114,7 @@ $(document).ready(function(){
 
                   that.loadProjectApps(that.projectID);
                   $('#addApplicationModal').modal('hide');
+                  $.notify("Application added.", "success");
               });
           },
           removeApplication: function() {
@@ -123,6 +127,8 @@ $(document).ready(function(){
                       that.selectedApp = '';
                       that.loadProjectApps(that.projectID);
                       $('#removeApplicationModal').modal('hide');
+
+                      $.notify("Application removed.", "info");
                   }
               });
           },

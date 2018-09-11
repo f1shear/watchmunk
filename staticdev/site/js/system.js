@@ -40,7 +40,7 @@ $(document).ready(function(){
                   url: "/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/",
                   type: 'PUT',
                   success: function(data) {
-                      alert("Saved!");
+                      $.notify("System saved.", "success");
                       that.project = data;
                   },
                   data: that.system
@@ -49,9 +49,10 @@ $(document).ready(function(){
           addSystem: function() {
               var that = this;
               $.post("/api/v1/projects/" + this.projectID + "/systems/", that.system, function(data) {
-                  alert("Added System!");
+                  
                   that.loadSystems(that.projectID);
                   $('#addSystemModal').modal('hide');
+                  $.notify("System added.", "success");
               });
           },
           extractURLInfo: function() {
@@ -127,7 +128,7 @@ $(document).ready(function(){
               }
 
               $.post("/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/dependencies/", payload, function(data) {
-
+                  $.notify("Dependency added.", "success");
                   that.loadDependencies();
               });
 
@@ -138,7 +139,7 @@ $(document).ready(function(){
                   url: "/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/dependencies/" + dep.id + "/",
                   type: 'DELETE',
                   success: function() {
-
+                      $.notify("Dependency removed.", "info");
                       that.loadDependencies();
                   }
               });
@@ -152,7 +153,7 @@ $(document).ready(function(){
               }
 
               $.post("/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/moderators/", payload, function(data) {
-
+                  $.notify("Moderator added.", "success");
                   that.loadModerators();
               });
 
@@ -163,7 +164,7 @@ $(document).ready(function(){
                   url: "/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/moderators/" + mod.id + "/",
                   type: 'DELETE',
                   success: function() {
-
+                      $.notify("Moderator removed.", "info");
                       that.loadModerators();
                   }
               });
@@ -177,9 +178,9 @@ $(document).ready(function(){
               }
 
               $.post("/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/apps/", payload, function(data) {
-
                   that.loadSystemApps(that.projectID, that.systemID);
                   $('#addApplicationModal').modal('hide');
+                  $.notify("Application added.", "success");
               });
 
           },
@@ -194,6 +195,7 @@ $(document).ready(function(){
                       that.selectedApp = '';
                       that.loadSystemApps(that.projectID, that.systemID);
                       $('#removeApplicationModal').modal('hide');
+                      $.notify("Application removed.", "info");
                   }
               });
           }
