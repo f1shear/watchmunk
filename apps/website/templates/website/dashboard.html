@@ -89,7 +89,9 @@ var app = new Vue({
     saveProject : function(){
       var that = this;
       $.post("api/v1/projects/", this.projectForm, function(data){
-        alert("Saved");
+        
+        $.notify("Saved", "success");
+        
         $('#addProjectModal').modal('hide');
         that.loadProjects();
       });
