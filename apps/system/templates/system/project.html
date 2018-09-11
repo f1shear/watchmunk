@@ -99,23 +99,31 @@
         
         <div class='row'>
           <div class='col-md-3'>
-            <br><br>
+           
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#addApplicationModal">
+            + Add New Application
+            </button>
+
+             <br><br>
+
             <ul class="list-group">
               <li class="list-group-item" v-for='app in projectApps'  v-bind:class="{ active:  selectedApp !='' && selectedApp.app.id == app.app.id }" v-on:click='setSelectedApp(app)'>
                 {{app.app.name}}
               </li>
             </ul>
-            <br><br>
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addApplicationModal">
-            + Add New Application
-            </button>
+
           </div>
           <div class='col-md-9'>
-            <div v-if='selectedApp==""'>
-              <br><br>
-              No app selected.
+            <div v-if='projectApps.length>0 && selectedApp==""'>
+              <br><br><br>
+               Please select an application.
             </div>
+            <div v-if='projectApps.length==0'>
+              <br><br><br>
+               No integrated applications.
+            </div>
+
             <div v-if='selectedApp!=""'>
               <b> App Posts </b> <hr>
               <button class='btn btn-primary btn-sm float-right'  data-toggle="modal" data-target="#removeApplicationModal">
