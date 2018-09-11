@@ -41,7 +41,7 @@ $(document).ready(function(){
                   type: 'PUT',
                   success: function(data) {
                       $.notify("System saved.", "success");
-                      that.project = data;
+                      that.system = data;
                   },
                   data: that.system
               });
