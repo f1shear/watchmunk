@@ -2,6 +2,7 @@ $(document).ready(function(){
 
 	  var systemDetailVue = new Vue({
       el: '#systemDetailVue',
+      mixins: [COMMON_MIXIN],
       data: {
           projectID: null,
           systemID: null,
@@ -24,29 +25,15 @@ $(document).ready(function(){
           systemDependencies: [],
           users: [],
           systems: [],
-          deploymentTypes: MODELS.deploymentTypes,
-          systemTypes: MODELS.systemTypes,
           selectedApp: '',
           appPosts: [],
-          apps: [],
+
           addAppForm: {
               app: '',
               system: '',
           }
       },
       methods: {
-          loadProject: function(projectID) {
-              var that = this;
-              $.get("/api/v1/projects/" + projectID + "/", function(data) {
-                  that.project = data;
-              });
-          },
-          loadSystem: function(projectID, systemID) {
-              var that = this;
-              $.get("/api/v1/projects/" + projectID + "/systems/" + systemID + "/", function(data) {
-                  that.system = data;
-              });
-          },
           saveSystem: function() {
               var that = this;
               $.ajax({
@@ -78,26 +65,17 @@ $(document).ready(function(){
                   projectID: path[path.length - 3 - trailingPad],
               };
           },
-          loadSystemApps: function(projectID, systemID) {
+          loadSystemApps: function() {
               var that = this;
               $.ajax({
-                  url: "/api/v1/projects/" + projectID + "/systems/" + systemID + "/apps/",
+                  url: "/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/apps/",
                   type: 'GET',
                   success: function(data) {
                       that.systemApps = data['results'];
                   }
               });
           },
-          loadApps: function() {
-              var that = this;
-              $.ajax({
-                  url: "/api/v1/apps/",
-                  type: 'GET',
-                  success: function(data) {
-                      that.apps = data['results'];
-                  }
-              });
-          },
+          
           setSelectedApp: function(app) {
               this.selectedApp = app;
               this.loadAppPosts();
@@ -139,18 +117,6 @@ $(document).ready(function(){
                   success: function(data) {
                       that.systemDependencies = data['results'];
                   }
-              });
-          },
-          loadSystems: function(projectID) {
-              var that = this;
-              $.get("/api/v1/projects/" + projectID + "/systems/", function(data) {
-                  that.systems = data['results'];
-              });
-          },
-          loadUsers: function() {
-              var that = this;
-              $.get("/api/v1/users/", function(data) {
-                  that.users = data['results'];
               });
           },
           addDependency: function(sys) {
@@ -235,66 +201,15 @@ $(document).ready(function(){
       },
 
       computed: {
-
           filteredSystems: function() {
-              var filtered = [];
-              var dependencies_dict = {};
-
-              for (var i = 0; i < this.systemDependencies.length; i++) {
-                  var dep = this.systemDependencies[i];
-                  dependencies_dict[dep.depends_on.id] = true;
-              }
-
-              for (var j = 0; j < this.systems.length; j++) {
-
-                  if (!(this.systems[j].id in dependencies_dict)) {
-                      filtered.push(this.systems[j])
-                  }
-
-              }
-
-              return filtered;
+              return this.filterData(this.systems, this.systemDependencies, 'depends_on.id');
           },
 
           filteredApps: function() {
-              var filtered = [];
-              var existing = {};
-
-              for (var i = 0; i < this.systemApps.length; i++) {
-                  var systemApp = this.systemApps[i];
-                  existing[systemApp.app.id] = true;
-              }
-
-              for (var j = 0; j < this.apps.length; j++) {
-
-                  if (!(this.apps[j].id in existing)) {
-                      filtered.push(this.apps[j])
-                  }
-
-              }
-
-              return filtered;
+              return this.filterData(this.apps, this.systemApps, 'app.id');
           },
           filteredUsers: function() {
-
-              var filtered = [];
-              var moderators_dict = {};
-
-              for (var i = 0; i < this.systemModerators.length; i++) {
-                  var mod = this.systemModerators[i];
-                  moderators_dict[mod.moderator.id] = true;
-              }
-
-              for (var j = 0; j < this.users.length; j++) {
-
-                  if (!(this.users[j].id in moderators_dict)) {
-                      filtered.push(this.users[j]);
-                  }
-
-              }
-
-              return filtered;
-
+              return this.filterData(this.users, this.systemModerators, 'moderator.id');
           },
       },
       mounted: function() {
@@ -303,11 +218,11 @@ $(document).ready(function(){
           this.projectID = urlInfo['projectID'];
           this.systemID = urlInfo['systemID'];
           this.loadApps();
-          this.loadProject(urlInfo['projectID']);
-          this.loadSystem(urlInfo['projectID'], urlInfo['systemID']);
-          this.loadSystemApps(urlInfo['projectID'], urlInfo['systemID']);
+          this.loadProject();
+          this.loadSystem();
+          this.loadSystemApps();
           this.loadUsers();
-          this.loadSystems(urlInfo['projectID']);
+          this.loadSystems();
           this.loadModerators();
           this.loadDependencies();
       }

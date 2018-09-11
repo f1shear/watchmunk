@@ -4,6 +4,7 @@ $(document).ready(function(){
 
   var projectDetailVue = new Vue({
       el: '#projectDetailVue',
+      mixins: [COMMON_MIXIN],
       data: {
           projectID: null,
           systems: [],
@@ -29,33 +30,9 @@ $(document).ready(function(){
               documentation: '',
               deployment_type: ''
           },
-          apps: [],
-          deploymentTypes: MODELS.deploymentTypes,
-          systemTypes: MODELS.systemTypes,
+          
       },
       methods: {
-          loadProject: function(projectID) {
-              var that = this;
-              $.get("/api/v1/projects/" + projectID, function(data) {
-                  that.project = data;
-              });
-          },
-          loadApps: function() {
-              var that = this;
-              $.ajax({
-                  url: "/api/v1/apps/",
-                  type: 'GET',
-                  success: function(data) {
-                      that.apps = data['results'];
-                  }
-              });
-          },
-          loadSystems: function(projectID) {
-              var that = this;
-              $.get("/api/v1/projects/" + projectID + "/systems/", function(data) {
-                  that.systems = data['results'];
-              });
-          },
           saveProject: function() {
               var that = this;
               $.ajax({
@@ -86,10 +63,10 @@ $(document).ready(function(){
                   projectID: path[path.length - 1 - trailingPad]
               };
           },
-          loadProjectApps: function(projectID) {
+          loadProjectApps: function() {
               var that = this;
               $.ajax({
-                  url: "/api/v1/projects/" + projectID + "/apps/",
+                  url: "/api/v1/projects/" + this.projectID + "/apps/",
                   type: 'GET',
                   success: function(data) {
                       that.projectApps = data['results'];
@@ -152,27 +129,15 @@ $(document).ready(function(){
       },
       computed: {
           filteredApps: function() {
-              var filtered = [];
-              var existing = {};
-              for (var i = 0; i < this.projectApps.length; i++) {
-                  var projectApp = this.projectApps[i];
-                  existing[projectApp.app.id] = true;
-              }
-              for (var j = 0; j < this.apps.length; j++) {
-                  if (!(this.apps[j].id in existing)) {
-                      filtered.push(this.apps[j])
-                  }
-              }
-
-              return filtered;
+              return this.filterData(this.apps, this.projectApps, 'app.id');
           },
       },
       mounted: function() {
           var urlInfo = this.extractURLInfo();
           this.projectID = urlInfo['projectID'];
-          this.loadProject(urlInfo['projectID']);
-          this.loadSystems(urlInfo['projectID']);
-          this.loadProjectApps(urlInfo['projectID']);
+          this.loadProject();
+          this.loadSystems();
+          this.loadProjectApps();
           this.loadApps();
       }
   });
