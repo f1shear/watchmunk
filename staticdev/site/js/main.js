@@ -151,3 +151,12 @@ var COMMON_MIXIN = {
         },
     }
 }
+
+$(document).ready(function(){
+
+  $.notify.defaults({
+    elementPosition: 'bottom right',
+    globalPosition: 'top right',
+  });
+
+});
