@@ -44,6 +44,8 @@ footer p {
 .page{
   padding: 1rem;
   min-height: 575px;
+  width: 90%;
+  margin: 0 auto;
 }
 
 .central{
@@ -62,4 +64,10 @@ footer p {
 .scrollable-list li{
   margin: 7px;
 
+}
+
+
+.notifyjs-corner{
+  right: 25px !important;
+  top: 120px !important;
 }
