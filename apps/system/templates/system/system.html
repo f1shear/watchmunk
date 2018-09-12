@@ -90,18 +90,22 @@
             <br>
             <div class='row'>
               <div class='col-md-6'>
-                <h4> Add Moderator </h4>
+                <h4> Allow User </h4>
                 <ul class='scrollable-list'>
                   <li v-for='user in filteredUsers'>
-                    <button class='btn btn-sm' title='Add' v-on:click='addModerator(user)'> + </button> {{user.username}}
+                    <button class='btn btn-sm' title='Add' v-on:click='addAccess(user)'> + </button> {{user.username}}
                   </li>
                 </ul>
               </div>
               <div class='col-md-6'>
-                <h4> Moderators </h4>
+                <h4> Access List </h4>
                 <ul class='scrollable-list'>
-                  <li v-for='moderator in systemModerators'>
-                  <button class='btn btn-sm' title='Remove' v-on:click='removeModerator(moderator)'> - </button> {{moderator.moderator.username}} 
+                  <li v-for='access in systemAccessList'>
+                  
+                  
+                  <button class='btn btn-sm' title='Remove' v-on:click='removeAccess(access)'> - </button>
+                  {{access.user.username}} &nbsp;&nbsp;
+                  <input type='checkbox' v-model='access.moderator' v-on:change='modifyAccess($event, access)' :id='"checkbox"+access.id'> <label :for='"checkbox"+access.id'>Is Moderator ?</label>
                   </li>
                 </ul>
               </div>
