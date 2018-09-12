@@ -92,18 +92,6 @@ class SystemAccessModel(models.Model):
         return "%s-%s" % (self.system, self.user)
 
 
-class SystemModeratorModel(models.Model):
-    system = models.ForeignKey(
-        'system.SystemModel',
-        related_name='moderators', on_delete=models.CASCADE)
-    moderator = models.ForeignKey(
-        'user.UserModel', related_name='+', on_delete=models.CASCADE)
-
-    class Meta:
-        db_table = 'system_moderator'
-        unique_together = (('system', 'moderator'), )
-
-
 class SystemDependencyModel(models.Model):
     system = models.ForeignKey(
         'system.SystemModel',

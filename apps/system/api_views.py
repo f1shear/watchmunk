@@ -11,7 +11,6 @@ from .models import (
     SystemModel,
     SystemAccessModel,
     SystemDependencyModel,
-    SystemModeratorModel,
     SystemAppModel,
     SystemAppPostModel,
 )
@@ -26,7 +25,6 @@ from .serializers import (
     SystemSerializer,
     SystemAccessSerializer,
     SystemDependencySerializer,
-    SystemModeratorSerializer,
     SystemAppSerializer,
     SystemAppPostSerializer,
 )
@@ -141,24 +139,6 @@ class SystemDependencyList(generics.ListCreateAPIView):
 class SystemDependencyDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SystemDependencyModel.objects.all()
     serializer_class = SystemDependencySerializer
-    permission_classes = (IsAuthenticated, )
-
-
-class SystemModeratorList(generics.ListCreateAPIView):
-    queryset = SystemModeratorModel.objects.all()
-    serializer_class = SystemModeratorSerializer
-    permission_classes = (IsAuthenticated, )
-
-    def get_queryset(self):
-        system_id = self.kwargs.get('system_id')
-        return SystemModeratorModel.objects.filter(
-            system_id=system_id).select_related(
-            'moderator')
-
-
-class SystemModeratorDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = SystemModeratorModel.objects.all()
-    serializer_class = SystemModeratorSerializer
     permission_classes = (IsAuthenticated, )
 
 

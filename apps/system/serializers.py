@@ -5,7 +5,6 @@ from .models import (
     ProjectAccessModel,
     SystemModel,
     SystemAccessModel,
-    SystemModeratorModel,
     SystemDependencyModel,
     AppModel,
     ProjectAppModel,
@@ -79,19 +78,6 @@ class SystemAccessSerializer(serializers.ModelSerializer):
         if 'request' in self.context:
             if self.context['request'].method == 'GET':
                 self.fields['user'] = UserSerializer()
-
-
-class SystemModeratorSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = SystemModeratorModel
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super(SystemModeratorSerializer, self).__init__(*args, **kwargs)
-        if 'request' in self.context:
-            if self.context['request'].method == 'GET':
-                self.fields['moderator'] = UserSerializer()
 
 
 class SystemDependencySerializer(serializers.ModelSerializer):

@@ -14,8 +14,6 @@ from apps.system.api_views import (
     SystemDetail,
     SystemAccessList,
     SystemAccessDetail,
-    SystemModeratorList,
-    SystemModeratorDetail,
     SystemDependencyList,
     SystemDependencyDetail,
     SystemAppList,
@@ -49,12 +47,6 @@ urlpatterns = [
     path(
         'projects/<int:project_id>/systems/<int:system_id>/dependencies/<int:pk>/',
         SystemDependencyDetail.as_view()),
-    path(
-        'projects/<int:project_id>/systems/<int:system_id>/moderators/',
-        SystemModeratorList.as_view()),
-    path(
-        'projects/<int:project_id>/systems/<int:system_id>/moderators/<int:pk>/',
-        SystemModeratorDetail.as_view()),
     path(
         'projects/<int:project_id>/systems/<int:system_id>/accesses/',
         SystemAccessList.as_view()),

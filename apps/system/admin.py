@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (
-    SystemModel, ProjectModel, SystemModeratorModel, SystemDependencyModel,
+    SystemModel, ProjectModel, SystemDependencyModel,
     AppModel, ProjectAppModel, SystemAppModel,
     ProjectAccessModel, SystemAccessModel,
 )
@@ -13,10 +13,6 @@ class ProjectAccessInline(admin.TabularInline):
 
 class SystemAccessInline(admin.TabularInline):
     model = SystemAccessModel
-
-
-class SystemModeratorInline(admin.TabularInline):
-    model = SystemModeratorModel
 
 
 class SystemDependencyInline(admin.TabularInline):
@@ -42,7 +38,6 @@ class SystemAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'system_type', 'deployment_type', 'author', )
     inlines = [
         SystemAccessInline,
-        SystemModeratorInline,
         SystemDependencyInline,
         SystemAppInline
     ]
