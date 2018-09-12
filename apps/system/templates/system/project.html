@@ -19,7 +19,7 @@
         <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Systems</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Project Detail</a>
+        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Project Detail & Access</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Apps/Integrations</a>
@@ -82,17 +82,51 @@
         
       </div>
       <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-        <form v-on:submit.prevent="saveProject">
-          <div class="form-group">
-            <label for="projectName">Project Name</label>
-            <input type="text" class="form-control" id="projectName" aria-describedby="systemNameHelp" v-model='project.name'>
+
+        <div class='row'>
+          <div class='col'>
+            <form v-on:submit.prevent="saveProject">
+              <div class="form-group">
+                <label for="projectName">Project Name</label>
+                <input type="text" class="form-control" id="projectName" aria-describedby="systemNameHelp" v-model='project.name'>
+              </div>
+              <div class="form-group">
+                <label for="description"> Description </label>
+                <textarea class='form-control' id="description" v-model="project.description"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </form>
           </div>
-          <div class="form-group">
-            <label for="description"> Description </label>
-            <textarea class='form-control' id="description" v-model="project.description"></textarea>
+          <div class='col'>
+
+            <div class='row'>
+              <div class='col-md-6'>
+                <h4> Allow User </h4>
+                <ul class='scrollable-list'>
+                  <li v-for='user in filteredUsers'>
+                    <button class='btn btn-sm' title='Add' v-on:click='addAccess(user)'> + </button> {{user.username}}
+                  </li>
+                </ul>
+              </div>
+              <div class='col-md-6'>
+                <h4> Access List </h4>
+                <ul class='scrollable-list'>
+                  <li v-for='access in projectAccessList'>
+                  
+                  
+                  <button class='btn btn-sm' title='Remove' v-on:click='removeAccess(access)'> - </button>
+                  {{access.user.username}} &nbsp;&nbsp;
+                  <input type='checkbox' v-model='access.moderator' v-on:change='modifyAccess($event, access)' :id='"checkbox"+access.id'> <label :for='"checkbox"+access.id'>Is Moderator ?</label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            
           </div>
-          <button type="submit" class="btn btn-primary">Save</button>
-        </form>
+        </div>
+
+        
         
       </div>
       <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">

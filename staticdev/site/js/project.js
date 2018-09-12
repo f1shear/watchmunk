@@ -32,6 +32,8 @@ $(document).ready(function(){
               documentation: '',
               deployment_type: ''
           },
+          users: [],
+          projectAccessList: [],
           
       },
       methods: {
@@ -132,10 +134,64 @@ $(document).ready(function(){
                   }
               });
           },
+          loadAccessList: function() {
+              var that = this;
+              $.ajax({
+                  url: "/api/v1/projects/" + this.projectID + "/accesses/",
+                  type: 'GET',
+                  success: function(data) {
+                      that.projectAccessList = data['results'];
+                  }
+              });
+          },
+          addAccess: function(user) {
+
+              var that = this;
+              var payload = {
+                  project: this.projectID,
+                  user: user.id
+              }
+
+              $.post("/api/v1/projects/" + this.projectID +  "/accesses/", payload, function(data) {
+                  $.notify("Access added.", "success");
+                  that.loadAccessList();
+              });
+
+          },
+          removeAccess: function(access) {
+              var that = this;
+              $.ajax({
+                  url: "/api/v1/projects/" + this.projectID +  "/accesses/" + access.id + "/",
+                  type: 'DELETE',
+                  success: function() {
+                      $.notify("Access removed.", "info");
+                      that.loadAccessList();
+                  }
+              });
+
+          },
+          modifyAccess: function($event, access){
+            var payload = {
+              moderator: access.moderator
+            }
+
+            $.ajax({
+              url: "/api/v1/projects/" + this.projectID +  "/accesses/" + access.id + "/",
+              type: 'PATCH',
+              success: function(data) {
+                  $.notify("Access modified.", "success");
+              },
+              data: payload
+            });
+
+          },
       },
       computed: {
           filteredApps: function() {
               return this.filterData(this.apps, this.projectApps, 'app.id');
+          },
+          filteredUsers: function() {
+              return this.filterData(this.users, this.projectAccessList, 'user.id');
           },
       },
       mounted: function() {
@@ -143,6 +199,8 @@ $(document).ready(function(){
           this.projectID = urlInfo['projectID'];
           this.loadProject();
           this.loadSystems();
+          this.loadUsers();
+          this.loadAccessList();
           this.loadProjectApps();
           this.loadApps();
       }
