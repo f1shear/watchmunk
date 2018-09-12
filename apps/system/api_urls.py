@@ -4,12 +4,16 @@ from apps.system.api_views import (
     AppDetail,
     ProjectList,
     ProjectDetail,
+    ProjectAccessList,
+    ProjectAccessDetail,
     ProjectAppList,
     ProjectAppDetail,
     ProjectAppPostList,
     ProjectAppPostDetail,
     SystemList,
     SystemDetail,
+    SystemAccessList,
+    SystemAccessDetail,
     SystemModeratorList,
     SystemModeratorDetail,
     SystemDependencyList,
@@ -24,6 +28,9 @@ from apps.system.api_views import (
 urlpatterns = [
     path('projects/', ProjectList.as_view()),
     path('projects/<int:pk>/', ProjectDetail.as_view()),
+    path('projects/<int:project_id>/accesses/', ProjectAccessList.as_view()),
+    path('projects/<int:project_id>/accesses/<int:pk>/',
+         ProjectAccessDetail.as_view()),
     path('apps/', AppList.as_view()),
     path('apps/<int:pk>/', AppDetail.as_view()),
     path('projects/<int:project_id>/apps/', ProjectAppList.as_view()),
@@ -48,6 +55,12 @@ urlpatterns = [
     path(
         'projects/<int:project_id>/systems/<int:system_id>/moderators/<int:pk>/',
         SystemModeratorDetail.as_view()),
+    path(
+        'projects/<int:project_id>/systems/<int:system_id>/accesses/',
+        SystemAccessList.as_view()),
+    path(
+        'projects/<int:project_id>/systems/<int:system_id>/accesses/<int:pk>/',
+        SystemAccessDetail.as_view()),
     path(
         'projects/<int:project_id>/systems/<int:system_id>/apps/',
         SystemAppList.as_view()),

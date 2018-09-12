@@ -5,9 +5,11 @@ from rest_framework.permissions import IsAuthenticated
 from .models import (
     AppModel,
     ProjectModel,
+    ProjectAccessModel,
     ProjectAppModel,
     ProjectAppPostModel,
     SystemModel,
+    SystemAccessModel,
     SystemDependencyModel,
     SystemModeratorModel,
     SystemAppModel,
@@ -18,9 +20,11 @@ from .models import (
 from .serializers import (
     AppSerializer,
     ProjectSerializer,
+    ProjectAccessSerializer,
     ProjectAppSerializer,
     ProjectAppPostSerializer,
     SystemSerializer,
+    SystemAccessSerializer,
     SystemDependencySerializer,
     SystemModeratorSerializer,
     SystemAppSerializer,
@@ -49,6 +53,18 @@ class ProjectList(generics.ListCreateAPIView):
 class ProjectDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ProjectModel.objects.all()
     serializer_class = ProjectSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+class ProjectAccessList(generics.ListCreateAPIView):
+    queryset = ProjectAccessModel.objects.all()
+    serializer_class = ProjectAccessSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+class ProjectAccessDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ProjectAccessModel.objects.all()
+    serializer_class = ProjectAccessSerializer
     permission_classes = (IsAuthenticated, )
 
 
@@ -95,6 +111,18 @@ class SystemList(generics.ListCreateAPIView):
 class SystemDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = SystemModel.objects.all()
     serializer_class = SystemSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+class SystemAccessList(generics.ListCreateAPIView):
+    queryset = SystemAccessModel.objects.all()
+    serializer_class = SystemAccessSerializer
+    permission_classes = (IsAuthenticated, )
+
+
+class SystemAccessDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SystemAccessModel.objects.all()
+    serializer_class = SystemAccessSerializer
     permission_classes = (IsAuthenticated, )
 
 
