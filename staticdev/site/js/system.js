@@ -20,7 +20,7 @@ $(document).ready(function(){
               deployment_type: '',
               author: {},
           },
-          systemModerators: [],
+          systemAccessList: [],
           systemApps: [],
           systemDependencies: [],
           users: [],
@@ -100,13 +100,13 @@ $(document).ready(function(){
                   }
               });
           },
-          loadModerators: function() {
+          loadAccessList: function() {
               var that = this;
               $.ajax({
-                  url: "/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/moderators/",
+                  url: "/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/accesses/",
                   type: 'GET',
                   success: function(data) {
-                      that.systemModerators = data['results'];
+                      that.systemAccessList = data['results'];
                   }
               });
           },
@@ -144,30 +144,45 @@ $(document).ready(function(){
                   }
               });
           },
-          addModerator: function(user) {
+          addAccess: function(user) {
 
               var that = this;
               var payload = {
                   system: this.system.id,
-                  moderator: user.id
+                  user: user.id
               }
 
-              $.post("/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/moderators/", payload, function(data) {
-                  $.notify("Moderator added.", "success");
-                  that.loadModerators();
+              $.post("/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/accesses/", payload, function(data) {
+                  $.notify("Access added.", "success");
+                  that.loadAccessList();
               });
 
           },
-          removeModerator: function(mod) {
+          removeAccess: function(access) {
               var that = this;
               $.ajax({
-                  url: "/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/moderators/" + mod.id + "/",
+                  url: "/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/accesses/" + access.id + "/",
                   type: 'DELETE',
                   success: function() {
-                      $.notify("Moderator removed.", "info");
-                      that.loadModerators();
+                      $.notify("Access removed.", "info");
+                      that.loadAccessList();
                   }
               });
+
+          },
+          modifyAccess: function($event, access){
+            var payload = {
+              moderator: access.moderator
+            }
+
+            $.ajax({
+              url: "/api/v1/projects/" + this.projectID + "/systems/" + this.systemID + "/accesses/" + access.id + "/",
+              type: 'PATCH',
+              success: function(data) {
+                  $.notify("Access modified.", "success");
+              },
+              data: payload
+            });
 
           },
           addApplication: function() {
@@ -211,7 +226,7 @@ $(document).ready(function(){
               return this.filterData(this.apps, this.systemApps, 'app.id');
           },
           filteredUsers: function() {
-              return this.filterData(this.users, this.systemModerators, 'moderator.id');
+              return this.filterData(this.users, this.systemAccessList, 'user.id');
           },
       },
       mounted: function() {
@@ -225,7 +240,7 @@ $(document).ready(function(){
           this.loadSystemApps();
           this.loadUsers();
           this.loadSystems();
-          this.loadModerators();
+          this.loadAccessList();
           this.loadDependencies();
       }
   });
