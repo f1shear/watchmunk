@@ -1,8 +1,18 @@
 from django.contrib import admin
 
-from .models import SystemModel, ProjectModel, SystemModeratorModel, SystemDependencyModel
+from .models import (
+    SystemModel, ProjectModel, SystemModeratorModel, SystemDependencyModel,
+    AppModel, ProjectAppModel, SystemAppModel,
+    ProjectAccessModel, SystemAccessModel,
+)
 
-from .models import AppModel, ProjectAppModel, SystemAppModel
+
+class ProjectAccessInline(admin.TabularInline):
+    model = ProjectAccessModel
+
+
+class SystemAccessInline(admin.TabularInline):
+    model = SystemAccessModel
 
 
 class SystemModeratorInline(admin.TabularInline):
@@ -30,13 +40,18 @@ class AppAdmin(admin.ModelAdmin):
 @admin.register(SystemModel)
 class SystemAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'system_type', 'deployment_type', 'author', )
-    inlines = [SystemModeratorInline, SystemDependencyInline, SystemAppInline]
+    inlines = [
+        SystemAccessInline,
+        SystemModeratorInline,
+        SystemDependencyInline,
+        SystemAppInline
+    ]
 
 
 @admin.register(ProjectModel)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', )
-    inlines = [ProjectAppInline, ]
+    inlines = [ProjectAccessInline, ProjectAppInline, ]
 
 
 @admin.register(ProjectAppModel)

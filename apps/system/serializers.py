@@ -1,9 +1,10 @@
 from rest_framework import serializers
 
-
 from .models import (
     ProjectModel,
+    ProjectAccessModel,
     SystemModel,
+    SystemAccessModel,
     SystemModeratorModel,
     SystemDependencyModel,
     AppModel,
@@ -21,6 +22,19 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectModel
         fields = '__all__'
+
+
+class ProjectAccessSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProjectAccessModel
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(ProjectAccessSerializer, self).__init__(*args, **kwargs)
+        if 'request' in self.context:
+            if self.context['request'].method == 'GET':
+                self.fields['user'] = UserSerializer()
 
 
 class SystemSerializer(serializers.ModelSerializer):
@@ -52,6 +66,19 @@ class SystemSerializer(serializers.ModelSerializer):
                 instance, key, validated_data.get(key, default))
         instance.save()
         return instance
+
+
+class SystemAccessSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SystemAccessModel
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(SystemAccessSerializer, self).__init__(*args, **kwargs)
+        if 'request' in self.context:
+            if self.context['request'].method == 'GET':
+                self.fields['user'] = UserSerializer()
 
 
 class SystemModeratorSerializer(serializers.ModelSerializer):

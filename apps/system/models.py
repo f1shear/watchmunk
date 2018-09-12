@@ -6,12 +6,27 @@ class ProjectModel(models.Model):
 
     name = models.CharField(max_length=255)
     description = models.TextField(default='', blank=True)
+    public = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'project'
 
     def __str__(self):
         return "%s" % self.name
+
+
+class ProjectAccessModel(models.Model):
+    project = models.ForeignKey(
+        'system.ProjectModel', related_name='+', on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        'user.UserModel', related_name='+', on_delete=models.CASCADE)
+    moderator = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'project_access'
+
+    def __str__(self):
+        return "%s-%s" % (self.project, self.user)
 
 
 class SystemModel(models.Model):
@@ -54,11 +69,27 @@ class SystemModel(models.Model):
         UserModel, related_name='author_systems',
         null=True, blank=True, on_delete=models.SET_NULL)
 
+    public = models.BooleanField(default=False)
+
     class Meta:
         db_table = 'system'
 
     def __str__(self):
         return "%s" % self.name
+
+
+class SystemAccessModel(models.Model):
+    system = models.ForeignKey(
+        'system.SystemModel', related_name='+', on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        'user.UserModel', related_name='+', on_delete=models.CASCADE)
+    moderator = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'system_access'
+
+    def __str__(self):
+        return "%s-%s" % (self.system, self.user)
 
 
 class SystemModeratorModel(models.Model):
