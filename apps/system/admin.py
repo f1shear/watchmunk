@@ -35,7 +35,7 @@ class AppAdmin(admin.ModelAdmin):
 
 @admin.register(SystemModel)
 class SystemAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'system_type', 'deployment_type', 'author', )
+    list_display = ('id', 'name', 'project', 'system_type', 'deployment_type', 'author', )
     inlines = [
         SystemAccessInline,
         SystemDependencyInline,
