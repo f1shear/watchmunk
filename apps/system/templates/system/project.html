@@ -11,6 +11,7 @@
         <a href='/dashboard'> Projects </a>
         >
         <a :href='"/projects/"+project.id' class='text-muted'> {{project.name}} </a>
+        <span class='badge badge-primary' v-if='project.public'>  Public </span>
         </h4>
       </div>
     </div>
@@ -48,6 +49,7 @@
                 <a :href="'/projects/'+project.id+'/systems/'+system.id">
                   {{system.name}}
                 </a>
+                <span class='badge badge-primary' v-if='system.public'>  Public </span>
               </td>
               <td>
                 {{system.description}}
