@@ -24,6 +24,7 @@ class ProjectAccessModel(models.Model):
 
     class Meta:
         db_table = 'project_access'
+        unique_together = (('project', 'user', ),)
 
     def __str__(self):
         return "%s-%s" % (self.project, self.user)
@@ -87,6 +88,7 @@ class SystemAccessModel(models.Model):
 
     class Meta:
         db_table = 'system_access'
+        unique_together = (('system', 'user', ),)
 
     def __str__(self):
         return "%s-%s" % (self.system, self.user)
