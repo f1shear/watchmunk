@@ -32,6 +32,7 @@
                     <a :href='"/projects/"+project.id'>
                       {{project.name}}
                     </a>
+                    <span class='badge badge-primary' v-if='project.public'>  Public </span>
                   </td>
                 </tr>
 
